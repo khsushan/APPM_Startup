@@ -101,6 +101,7 @@
             <artifactId>org.wso2.carbon.identity.user.profile.stub</artifactId>
             <version>4.2.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.authenticator.stub</artifactId>
@@ -116,6 +117,17 @@
             <artifactId>org.wso2.carbon.authenticator.proxy</artifactId>
             <version>4.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.registry.ws.client</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.3.6</version>
+        </dependency>
+
 
     </dependencies>
 
