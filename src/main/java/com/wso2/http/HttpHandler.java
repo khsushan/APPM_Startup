@@ -1,5 +1,6 @@
 package com.wso2.http;
 
+import com.wso2.bean.MobileApplicationBean;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -116,77 +117,54 @@ public class HttpHandler {
     }
 
 
-    public String postMultiData(String url,String method,String appMeta,String cookie) throws IOException {
+    public String postMultiData(String url,String method,MobileApplicationBean mobileApplicationBean,String cookie) throws IOException {
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost =  new HttpPost(url);
-        //httpPost.addHeader("Content-Type",contentType);
-        //httpPost.addHeader("Accept","application/json, text/javascript, */*; q=0.01");
-        //httpPost.addHeader("Accept-Encoding","gzip, deflate");
-        //httpPost.addHeader("Accept-Language","en-US,en;q=0.5");
         httpPost.addHeader("Cookie", "JSESSIONID=" + cookie);
 
         MultipartEntityBuilder reqEntity;
         if(method.equals("upload")) {
             System.out.println("Upload app data");
             reqEntity = MultipartEntityBuilder.create();
-            FileBody fileBody = new FileBody(new File("/home/ushan/wso2/APPM/LATEST_BUILD/wso2appm-1.0.0-SNAPSHOT/repository/resources/mobileapps/CleanCalc/Resources/CleanCalc.apk"));
-
+            FileBody fileBody = new FileBody(new File(mobileApplicationBean.getApkFile()));
             reqEntity.addPart("file", fileBody);
         }else{
             System.out.println("Send app data");
             reqEntity = MultipartEntityBuilder.create();
-            reqEntity.addPart("version",new StringBody("1.2.3",ContentType.MULTIPART_FORM_DATA));
-            reqEntity.addPart("provider",new StringBody("1WSO2Mobile",ContentType.MULTIPART_FORM_DATA));
-            reqEntity.addPart("markettype",new StringBody("Enterprise",ContentType.MULTIPART_FORM_DATA));
-            reqEntity.addPart("platform",new StringBody("android",ContentType.MULTIPART_FORM_DATA));
-            reqEntity.addPart("name",new StringBody("myTest",ContentType.MULTIPART_FORM_DATA));
-            reqEntity.addPart("description",new StringBody("this is a clean calucultor",ContentType.MULTIPART_FORM_DATA));
-            FileBody bannerImageFile = new FileBody(new File("/home/ushan/Shell_Script_Test/APPM/wso2appm-1.0.0-SNAPSHOT/repository/resources/mobileapps/CleanCalc/Resources/banner.png"));
+            reqEntity.addPart("version",new StringBody(mobileApplicationBean.getVersion(),ContentType.MULTIPART_FORM_DATA));
+            reqEntity.addPart("provider",new StringBody(mobileApplicationBean.getMarkettype(),ContentType.MULTIPART_FORM_DATA));
+            reqEntity.addPart("markettype",new StringBody(mobileApplicationBean.getMarkettype(),ContentType.MULTIPART_FORM_DATA));
+            reqEntity.addPart("platform",new StringBody(mobileApplicationBean.getPlatform(),ContentType.MULTIPART_FORM_DATA));
+            reqEntity.addPart("name",new StringBody(mobileApplicationBean.getName(),ContentType.MULTIPART_FORM_DATA));
+            reqEntity.addPart("description",new StringBody(mobileApplicationBean.getDescription(),ContentType.MULTIPART_FORM_DATA));
+            FileBody bannerImageFile = new FileBody(new File(mobileApplicationBean.getBannerFilePath()));
             reqEntity.addPart("bannerFile",bannerImageFile);
-            FileBody iconImageFile = new FileBody(new File("/home/ushan/Shell_Script_Test/APPM/wso2appm-1.0.0-SNAPSHOT/repository/resources/mobileapps/CleanCalc/Resources/icon.png"));
+            FileBody iconImageFile = new FileBody(new File(mobileApplicationBean.getIconFile()));
             reqEntity.addPart("iconFile",iconImageFile);
-            FileBody screenShot1 = new FileBody(new File("/home/ushan/Shell_Script_Test/APPM/wso2appm-1.0.0-SNAPSHOT/repository/resources/mobileapps/CleanCalc/Resources/screen1.png"));
+            FileBody screenShot1 = new FileBody(new File(mobileApplicationBean.getScreenShot1File()));
             reqEntity.addPart("screenshot1File",screenShot1);
-            FileBody screenShot2= new FileBody(new File("/home/ushan/Shell_Script_Test/APPM/wso2appm-1.0.0-SNAPSHOT/repository/resources/mobileapps/CleanCalc/Resources/screen2.png"));
+            FileBody screenShot2= new FileBody(new File(mobileApplicationBean.getScreenShot2File()));
             reqEntity.addPart("screenshot2File",screenShot2);
-            FileBody screenShot3 = new FileBody(new File("/home/ushan/Shell_Script_Test/APPM/wso2appm-1.0.0-SNAPSHOT/repository/resources/mobileapps/CleanCalc/Resources/screen3.png"));
+            FileBody screenShot3 = new FileBody(new File(mobileApplicationBean.getScreenShot3File()));
             reqEntity.addPart("screenshot3File",screenShot3);
-
-
             reqEntity.addPart("addNewAssetButton",new StringBody("Submit",ContentType.MULTIPART_FORM_DATA));
-            reqEntity.addPart("mobileapp",new StringBody("mobileapp",ContentType.MULTIPART_FORM_DATA));
-            reqEntity.addPart("appmeta",new StringBody(appMeta,ContentType.MULTIPART_FORM_DATA));
+            reqEntity.addPart("mobileapp",new StringBody(mobileApplicationBean.getMobileapp(),ContentType.MULTIPART_FORM_DATA));
+            reqEntity.addPart("appmeta",new StringBody(mobileApplicationBean.getAppmeta(),ContentType.MULTIPART_FORM_DATA));
         }
         final HttpEntity entity = reqEntity.build();
         httpPost.setEntity(entity);
         System.out.println("Requesting : " + httpPost.getAllHeaders());
-
-
-
-
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         String responseBody = httpClient.execute(httpPost, responseHandler);
         System.out.println("responseBody : " + responseBody);
-        int statusCode = -1;
-        /*String responseBody = null;
 
-        try {
-            HttpResponse httpResponse = httpClient.execute(httpPost);
+        if(!method.equals("upload")){
+            String id_part =  responseBody.split(",")[2].split(":")[1];
+            return  id_part.substring(2,(id_part.length()-2));
+        }
 
-            StatusLine status = httpResponse.getStatusLine();
-            statusCode = status.getStatusCode();
-            responseBody = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
-            System.out.println("Status code : "+ status);
-            System.out.println("Responce body : "+ responseBody);
-            if (statusCode >= 300) {
-
-            } else {
-
-            }
-        } catch (IOException e) {
-
-        }*/
         return  responseBody;
+
 
     }
 }
