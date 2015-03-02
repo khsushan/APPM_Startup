@@ -19,9 +19,24 @@ import org.wso2.carbon.um.ws.api.stub.RemoteUserStoreManagerServiceUserStoreExce
 import java.io.IOException;
 import java.rmi.RemoteException;
 
-/**
- * Created by ushan on 2/11/15.
- */
+/*
+*  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+*  WSO2 Inc. licenses this file to you under the Apache License,
+*  Version 2.0 (the "License"); you may not use this file except
+*  in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
 public class MainController {
 
     private static final Log log = LogFactory.getLog(MainController.class);
@@ -236,29 +251,20 @@ public class MainController {
                         , mobileApplicationBean, appm_session);
                 publishApplication("", "mobileapp", normal_session, appm_session, null, "", ID);
             } catch (IOException e) {
-                //log.error(e.getMessage());
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
         } catch (AxisFault axisFault) {
-            //log.error(axisFault.getMessage());
-            //axisFault.printStackTrace();
             configure();
-            // axisFault.printStackTrace();
         } catch (RemoteException e) {
-            e.printStackTrace();
-            //log.error(e.getMessage());
+            log.error(e.getMessage());
         } catch (LoginAuthenticationExceptionException e) {
             log.error(e.getMessage());
-            e.printStackTrace();
         } catch (ClaimManagementServiceException e) {
             log.error(e.getMessage());
-            e.printStackTrace();
         } catch (RemoteUserStoreManagerServiceUserStoreExceptionException e) {
             log.error(e.getMessage());
-            e.printStackTrace();
         } catch (RegistryException e) {
             log.error(e.getMessage());
-            e.printStackTrace();
         }
 
     }
