@@ -41,11 +41,12 @@ public class MainController {
 
     private static final Log log = LogFactory.getLog(MainController.class);
     private static WSRegistryService_Client wsRegistryService_client;
+    private static String backEndNonSecureUrl = "http://localhost:9763";
     private static String backEndUrl = "https://localhost:9443";
     private static HttpHandler httpHandler = new HttpHandler();
     private static String tomcatPort = "8080";
     private static String wampPort = "80";
-    private static String appmPath = "/home/ushan/wso2/APPM/APPM(2_22)/wso2appm-1.0.0-SNAPSHOT";
+    private static String appmPath = "/home/ushan/Shell_Script_Test/APPM/wso2appm-1.0.0-SNAPSHOT";
     private static String username = "admin";
     private static String password = "admin";
 
@@ -80,7 +81,7 @@ public class MainController {
             //plan-your-trip
             log.info("Add claim mapping");
             claimManagementServiceClient.addClaim("FrequentFlyerID", "http://wso2.org/ffid", true);
-            claimManagementServiceClient.addClaim("zipcode", "http://wso2.org/zipcode", true);
+            claimManagementServiceClient.addClaim("zipcode", "http://wso2.org/claims/zipcode", true);
             claimManagementServiceClient.addClaim("Credit card number", "http://wso2.org/claims/card_number", true);
             claimManagementServiceClient.addClaim("Credit cArd Holder Name", "http://wso2.org/claims/card_holder"
                     , true);
@@ -91,63 +92,108 @@ public class MainController {
             log.info("Updating claim values");
             remoteUserStoreManagerServiceClient.updateClaims("admin", "http://wso2.org/ffid", "12345151");
             remoteUserStoreManagerServiceClient.updateClaims("admin", "http://wso2.org/claims/streetaddress", "21/5");
-            remoteUserStoreManagerServiceClient.updateClaims("admin", "http://wso2.org/zipcode", "GL");
+            remoteUserStoreManagerServiceClient.updateClaims("admin", "http://wso2.org/claims/zipcode", "GL");
             remoteUserStoreManagerServiceClient.updateClaims("admin", "http://wso2.org/claims/card_number"
                     , "001012676878");
             remoteUserStoreManagerServiceClient.updateClaims("admin", "http://wso2.org/claims/card_holder", "Admin");
+            remoteUserStoreManagerServiceClient.updateClaims("admin", "http://wso2.org/claims/telephone", "091222222");
+            remoteUserStoreManagerServiceClient.updateClaims("admin", "http://wso2.org/claims/givenname", "Sachith");
+            remoteUserStoreManagerServiceClient.updateClaims("admin", "http://wso2.org/claims/lastname", "Ushan");
+            remoteUserStoreManagerServiceClient.updateClaims("admin", "http://wso2.org/claims/emailaddress", "wso2@wso2.com");
+            remoteUserStoreManagerServiceClient.updateClaims("admin", "http://wso2.org/claims/country", "SriLanka");
+
             remoteUserStoreManagerServiceClient.updateClaims("admin", "http://wso2.org/claims/expiration_date"
                     , "31/12/2015");
+
+
             //publish application
             log.info("Creating application DTO");
             try {
-                String appm_session = httpHandler.doPost(backEndUrl + "/publisher/api/authenticate",
-                        "username="+username+"&password="+password+"&action=login", ""
+                String appm_session = httpHandler.doPostHttps(backEndUrl + "/publisher/api/authenticate",
+                        "username=" + username + "&password=" + password + "&action=login", ""
                         , "application/x-www-form-urlencoded");
+                System.out.println("Appm Session : " + appm_session);
                 AppCreateRequest appCreateRequest = new AppCreateRequest();
-                String policyIDResponce = httpHandler.doPost(backEndUrl + "/publisher/api/entitlement/policy/partial" +
+                String policyIDResponce = httpHandler.doPostHttps(backEndUrl + "/publisher/api/entitlement/policy/partial" +
                                 "/policyGroup/save", "anonymousAccessToUrlPattern=false&policyGroupName" +
-                                "=test&throttlingTier=Unlimited&objPartialMappings=[]&policyGroupDesc=null&userRoles=null",
+                                "=test&throttlingTier=Unlimited&objPartialMappings=[]&policyGroupDesc=null&userRoles=",
                         appm_session, "application/x-www-form-urlencoded; charset=UTF-8");
-                System.out.println("Policy id res is : " + policyIDResponce);
                 String splitValue = policyIDResponce.split(":")[3];
                 String policyId = splitValue.substring(1, (splitValue.length() - 2)).trim();
-                System.out.println("Policy id is : " + policyId);
                 appCreateRequest.setUritemplate_policyGroupIds("[" + policyId + "]");
                 appCreateRequest.setUritemplate_policyGroupId4(policyId);
                 appCreateRequest.setUritemplate_policyGroupId3(policyId);
                 appCreateRequest.setUritemplate_policyGroupId2(policyId);
                 appCreateRequest.setUritemplate_policyGroupId1(policyId);
                 appCreateRequest.setUritemplate_policyGroupId0(policyId);
-
-                //publishing travelWebapp
+                appCreateRequest.setClaimPropertyName0("http://wso2.org/claims/streetaddress,http://wso2.org/ffid" +
+                        ",http://wso2.org/claims/telephone");
+                appCreateRequest.setClaimPropertyCounter("3");
+                 //publishing travelWebapp
                 appCreateRequest.setOverview_name("travelWebapp");
                 appCreateRequest.setOverview_displayName("travelWebapp");
-                appCreateRequest.setOverview_context("/travel6");
+                appCreateRequest.setOverview_context("/travel");
                 appCreateRequest.setOverview_version("1.0.0");
                 appCreateRequest.setOverview_transports("http");
-                appCreateRequest.setOverview_webAppUrl("http://localhost:" + tomcatPort + "/plan-your-trip");
+                appCreateRequest.setOverview_webAppUrl("http://localhost:" + tomcatPort + "/plan-your-trip/");
+
                 String payload = appCreateRequest.generateRequestParameters();
                 System.out.println(payload);
                 publishApplication(appCreateRequest.getOverview_name(), "webapp", normal_session,
                         appm_session, appCreateRequest, "application/x-www-form-urlencoded", "");
+
+                String store_session = httpHandler.doPostHttp(backEndNonSecureUrl + "/store/apis/user/login",
+                        "{\"username\":\"admin\"" +
+                                ",\"password\":\"admin\"}", "header", "application/json");
+                System.out.println("Login Responce : " + store_session);
+
+                String subcriptionResponce = httpHandler.doPostHttps(backEndUrl + "/store/resources/webapp/v1/subscription/app",
+                        "apiName=" + appCreateRequest.getOverview_name() + "" +
+                                "&apiVersion=" + appCreateRequest.getOverview_version() + "&apiTier=" +
+                                appCreateRequest.getOverview_tier()
+                                + "&subscriptionType=INDIVIDUAL&apiProvider=admin&appName=DefaultApplication"
+                        , store_session, "application/x-www-form-urlencoded; charset=UTF-8");
+                System.out.println("Subcription Responce : " + subcriptionResponce);
+
+
                 //publishing travel booking application
                 appCreateRequest.setOverview_name("TravelBooking");
                 appCreateRequest.setOverview_displayName("TravelBooking");
                 appCreateRequest.setOverview_context("/travelBooking");
                 appCreateRequest.setOverview_version("1.0.0");
                 appCreateRequest.setOverview_transports("http");
-                appCreateRequest.setOverview_webAppUrl("http://localhost:" + tomcatPort + "/travel-booking-1.0");
+                appCreateRequest.setClaimPropertyName0("http://wso2.org/claims/givenname,http://wso2.org/claims/lastname" +
+                        ",http://wso2.org/claims/emailaddress,http://wso2.org/claims/streetaddress" +
+                        ",http://wso2.org/claims/zipcode,http://wso2.org/claims/country" +
+                        ",http://wso2.org/claims/card_number,http://wso2.org/claims/card_holder" +
+                        ",http://wso2.org/claims/expiration_date");
+                appCreateRequest.setClaimPropertyCounter("9");
+                appCreateRequest.setOverview_webAppUrl("http://localhost:" + tomcatPort + "/travel-booking-1.0/");
                 publishApplication(appCreateRequest.getOverview_name(), "webapp", normal_session,
                         appm_session, appCreateRequest, "application/x-www-form-urlencoded", "");
+                httpHandler.doPostHttps(backEndUrl + "/store/resources/webapp/v1/subscription/app",
+                        "apiName=" + appCreateRequest.getOverview_name() + "" +
+                                "&apiVersion=" + appCreateRequest.getOverview_version() + "&apiTier=" +
+                                appCreateRequest.getOverview_tier()
+                                + "&subscriptionType=INDIVIDUAL&apiProvider=admin&appName=DefaultApplication"
+                        , store_session, "application/x-www-form-urlencoded; charset=UTF-8");
                 //publishing notifi webapplication
-                appCreateRequest.setOverview_name("notifi");
-                appCreateRequest.setOverview_context("/notifi");
-                appCreateRequest.setOverview_displayName("notifi");
+                appCreateRequest.setOverview_name("notifi1");
+                appCreateRequest.setOverview_context("/notifi1");
+                appCreateRequest.setOverview_displayName("notifi1");
                 appCreateRequest.setOverview_version("1.0.0");
                 appCreateRequest.setOverview_transports("http");
-                appCreateRequest.setOverview_webAppUrl("http://localhost/notifi/index.php");
+                appCreateRequest.setClaimPropertyName0("http://wso2.org/claims/card_number");
+                appCreateRequest.setClaimPropertyCounter("1");
+                appCreateRequest.setOverview_webAppUrl("http://localhost/notifi/");
                 publishApplication(appCreateRequest.getOverview_name(), "webapp", normal_session,
                         appm_session, appCreateRequest, "application/x-www-form-urlencoded", "");
+                httpHandler.doPostHttps(backEndUrl + "/store/resources/webapp/v1/subscription/app",
+                        "apiName=" + appCreateRequest.getOverview_name() + "" +
+                                "&apiVersion=" + appCreateRequest.getOverview_version() + "&apiTier=" +
+                                appCreateRequest.getOverview_tier()
+                                + "&subscriptionType=INDIVIDUAL&apiProvider=admin&appName=DefaultApplication"
+                        , store_session, "application/x-www-form-urlencoded; charset=UTF-8");
                 //ExchangeR
                 appCreateRequest.setOverview_name("ExchangeR");
                 appCreateRequest.setOverview_displayName("ExchangeR");
@@ -162,7 +208,12 @@ public class MainController {
                         "/repository/resources/mobileapps/ExchangeR/Resources/banner.png");
                 publishApplication(appCreateRequest.getOverview_name(), "webapp", normal_session, appm_session,
                         appCreateRequest, "application/x-www-form-urlencoded", "");
-
+                httpHandler.doPostHttps(backEndUrl + "/store/resources/webapp/v1/subscription/app",
+                        "apiName=" + appCreateRequest.getOverview_name() + "" +
+                                "&apiVersion=" + appCreateRequest.getOverview_version() + "&apiTier=" +
+                                appCreateRequest.getOverview_tier()
+                                + "&subscriptionType=INDIVIDUAL&apiProvider=admin&appName=DefaultApplication"
+                        , store_session, "application/x-www-form-urlencoded; charset=UTF-8");
                 //publish mobile application clean calc
                 MobileApplicationBean mobileApplicationBean = new MobileApplicationBean();
                 mobileApplicationBean.setApkFile(appmPath + "/repository/resources/mobileapps/CleanCalc" +
@@ -192,7 +243,6 @@ public class MainController {
                         mobileApplicationBean, appm_session);
                 System.out.println("ID Clean Clac : " + ID);
                 publishApplication("", "mobileapp", normal_session, appm_session, null, "", ID);
-
                 //wso2Con
                 mobileApplicationBean.setAppmeta("{\"package\":\"com.wso2.wso2con.mobile\",\"version\":\"1.0.0\"}");
                 mobileApplicationBean.setVersion("1.0.0");
@@ -250,21 +300,26 @@ public class MainController {
                 ID = httpHandler.postMultiData(backEndUrl + "/publisher/api/asset/mobileapp", "none"
                         , mobileApplicationBean, appm_session);
                 publishApplication("", "mobileapp", normal_session, appm_session, null, "", ID);
+
+
             } catch (IOException e) {
                 log.error(e.getMessage());
             }
         } catch (AxisFault axisFault) {
-            configure();
+            axisFault.printStackTrace();
+            //configure();
         } catch (RemoteException e) {
-            log.error(e.getMessage());
+            //log.error(e.getMessage());
+            e.printStackTrace();
         } catch (LoginAuthenticationExceptionException e) {
             log.error(e.getMessage());
-        } catch (ClaimManagementServiceException e) {
+        }catch (ClaimManagementServiceException e) {
             log.error(e.getMessage());
         } catch (RemoteUserStoreManagerServiceUserStoreExceptionException e) {
             log.error(e.getMessage());
         } catch (RegistryException e) {
-            log.error(e.getMessage());
+            //log.error(e.getMessage());
+            e.printStackTrace();
         }
 
     }
@@ -277,29 +332,51 @@ public class MainController {
 
         if (!applicationType.equals("mobileapp")) {
             String payload = appCreateRequest.generateRequestParameters();
-            String resPonce = httpHandler.doPost(backEndUrl + "/publisher/asset/" + applicationType, payload
+            String resPonce = httpHandler.doPostHttps(backEndUrl + "/publisher/asset/" + applicationType, payload
                     , appm_session_id, contentType);
             System.out.println("resPonce Creating application " + resPonce);
-            String jsonPayload = "{\"provider\":\"wso2is-5.0.0\",\"logout_url\":\"\",\"claims\":[\"http://wso2." +
-                    "org/claims/role\"],\"app_name\":\"" + appCreateRequest.getOverview_name() + "\",\"app_verison\":\""
+
+            String claims_ary="[\"http://wso2.org/claims/givenname\"]";
+
+            if(appCreateRequest.getClaimPropertyName0().contains(",")){
+                claims_ary ="[";
+                String[] claims = appCreateRequest.getClaimPropertyName0().split(",");
+                for (int i = 0; i < claims.length; i++) {
+                    claims_ary+="\""+claims[i]+"\"";
+                    if(claims.length-1 != i){
+                        claims_ary+=",";
+                    }
+                }
+                claims_ary+="]";
+            }
+            System.out.println(claims_ary);
+            String jsonPayload = "{\"provider\":\"wso2is-5.0.0\",\"logout_url\":\"\",\"claims\":"+claims_ary+"" +
+                    ",\"app_name\":\"" + appCreateRequest.getOverview_name() + "\",\"app_verison\":\""
                     + appCreateRequest.getOverview_version() + "\",\"app_transport\":\"http\",\"app_context\":\""
                     + appCreateRequest.getOverview_context() + "\",\"app_provider\":\"admin\",\"app_allowAnonymous\":\"f" +
                     "alse\"}";
-            resPonce = httpHandler.doPost(backEndUrl + "/publisher/api/sso/addConfig", jsonPayload, appm_session_id
+            System.out.println(jsonPayload);
+            resPonce = httpHandler.doPostHttps(backEndUrl + "/publisher/api/sso/addConfig", jsonPayload, appm_session_id
                     , "application/json; charset=UTF-8");
             System.out.println("resPonce SSO Config " + resPonce);
             wsRegistryService_client = new WSRegistryService_Client(backEndUrl, session);
-            appPath = "/_system/governance/apimgt/applicationdata/provider/admin/" + applicationName + "/1.0.0/"
+            appPath = "/_system/governance/appmgt/applicationdata/provider/admin/" + applicationName + "/1.0.0/"
                     + applicationType;
             UUID = wsRegistryService_client.getUUID(appPath);
         } else {
             UUID = id;
         }
         //publishing application
-        httpHandler.RestPutClient(backEndUrl + "/publisher/api/lifecycle/Submit/" + applicationType + "/" + UUID
-                , appm_session_id);
+        if (applicationType.equals("mobileapp")) {
+            httpHandler.RestPutClient(backEndUrl + "/publisher/api/lifecycle/Submit/" + applicationType + "/" + UUID
+                    , appm_session_id);
+        } else {
+            httpHandler.RestPutClient(backEndUrl + "/publisher/api/lifecycle/Publish/" + applicationType + "/" + UUID
+                    , appm_session_id);
+        }
         httpHandler.RestPutClient(backEndUrl + "/publisher/api/lifecycle/Approve/" + applicationType + "/" + UUID
                 , appm_session_id);
+
         if (applicationType.equals("mobileapp")) {
             httpHandler.RestPutClient(backEndUrl + "/publisher/api/lifecycle/Publish/" + applicationType + "/" + UUID
                     , appm_session_id);

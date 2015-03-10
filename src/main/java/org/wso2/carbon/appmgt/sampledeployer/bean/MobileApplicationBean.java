@@ -20,19 +20,22 @@ package org.wso2.carbon.appmgt.sampledeployer.bean;
 
 public class MobileApplicationBean {
 
+    private String appmeta;
     private String version;
     private String provider;
     private String markettype;
     private String platform;
     private String name;
     private String description;
+    private String recentChanges;
     private String bannerFilePath;
+    private String sso_ssoProvider = "wso2is-5.0.0";
     private String iconFile;
     private String screenShot1File;
     private String screenShot2File;
     private String screenShot3File;
     private String mobileapp;
-    private String appmeta;
+
     private String apkFile;
 
     public MobileApplicationBean(){
@@ -149,4 +152,12 @@ public class MobileApplicationBean {
         this.apkFile = apkFile;
     }
 
+
+    public String getSso_ssoProvider() {
+        return sso_ssoProvider;
+    }
+
+    public void setSso_ssoProvider(String sso_ssoProvider) {
+        this.sso_ssoProvider = sso_ssoProvider;
+    }
 }

@@ -19,67 +19,67 @@ package org.wso2.carbon.appmgt.sampledeployer.bean;
 */
 
 public class AppCreateRequest extends AbstractRequest {
-    private String overview_provider = "admin";
-    private String overview_name = "defaultAPP";
-    private String overview_displayName = "defaultApplication";
-    private String overview_context = "/defaultAPP";
-    private String overview_version = "1.0.0";
-    private String optradio = "on";
-    private String overview_transports = "http";
-    private String overview_webAppUrl = "www.defaultapp.com";
-    private String overview_description = "TestCases description";
-    private String images_thumbnail;
-    private String images_banner;
-    private String context;
-    private String version;
-    private String overview_tier = "Unlimited";
-    private String overview_trackingCode = "AM_-1305386558";
-    private String tags = "";
-    private String overview_allowAnonymous = "false";
-    private String overview_skipGateway = "false";
-    private String roles;
-    private String overview_logoutUrl;
-    private String uritemplate_policyGroupIds="[]";
+    private String overview_provider="admin";
+    private String overview_name="test";
+    private String overview_displayName="test";
+    private String overview_context="/test";
+    private String overview_version="1.0.0";
+    private String optradio="on";
+    private String overview_transports="http";
+    private String  overview_webAppUrl="http://localhost:8080/travel-booking-1.0/";
+    private String  overview_description="The provider has not given a description.";
+    private String images_thumbnail="";
+    private String images_banner="";
+    private String context="";
+    private String version="";
+    private String overview_tier="Unlimited";
+    private String overview_trackingCode="AM_027035511331632733";
+    private String tags="";
+    private String overview_allowAnonymous="false";
+    private String overview_skipGateway="false";
+    private String roles="";
+    private String overview_logoutUrl="";
+    private String uritemplate_policyGroupIds="[3]";
     private String uritemplate_policyPartialIdstemp="[]";
-    private String uritemplate_urlPattern4 = "/*";
-    private String uritemplate_httpVerb4 = "OPTIONS";
-    private String uritemplate_policyGroupId4= "0";
-    private String uritemplate_urlPattern3 = "/*";
-    private String uritemplate_httpVerb3 = "DELETE";
-    private String uritemplate_policyGroupId3 = "0";
-    private String uritemplate_urlPattern2 = "/*";
-    private String uritemplate_httpVerb2 = "PUT";
-    private String uritemplate_policyGroupId2 = "0";
-    private String uritemplate_urlPattern1 = "/*";
-    private String uritemplate_httpVerb1 = "POST";
-    private String uritemplate_policyGroupId1 = "0";
-    private String uritemplate_urlPattern0 = "/*";
-    private String uritemplate_httpVerb0 = "GET";
-    private String uritemplate_policyGroupId0 = "0";
-    private String entitlementPolicies = "[]";
-    private String autoConfig = "on";
-    private String providers = "wso2is-5.0.0";
-    private String sso_ssoProvider = "wso2is-5.0.0";
-    private String claims = "http://wso2.org/claims/role";
-    private String claimPropertyCounter = "1";
-    private String claimPropertyName3 = "http://wso2.org/claims/role";
-    private String sso_singleSignOn = "Enabled";
-    private String sso_idpProviderUrl = "https://localhost:9444/samlsso/";
-    private String sso_saml2SsoIssuer;
-    private String oauthapis_apiTokenEndpoint1;
-    private String oauthapis_apiConsumerKey1;
-    private String oauthapis_apiConsumerSecret1;
-    private String oauthapis_apiName1;
-    private String oauthapis_apiTokenEndpoint2;
-    private String oauthapis_apiConsumerKey2;
-    private String oauthapis_apiConsumerSecret2;
-    private String oauthapis_apiName2;
-    private String oauthapis_apiTokenEndpoint3;
-    private String oauthapis_apiConsumerKey3;
-    private String oauthapis_apiConsumerSecret3;
-    private String oauthapis_apiName3;
-    private String webapp = "webapp";
-    private String claimPropertyName0 = "http://wso2.org/claims/role";
+    private String uritemplate_javaPolicyIds="[]";
+    private String uritemplate_urlPattern4="/*";
+    private String uritemplate_httpVerb4="OPTIONS";
+    private String uritemplate_policyGroupId4="3";
+    private String uritemplate_urlPattern3="/*";
+    private String uritemplate_httpVerb3="DELETE";
+    private String uritemplate_policyGroupId3="3";
+    private String uritemplate_urlPattern2="/*";
+    private String uritemplate_httpVerb2="PUT";
+    private String uritemplate_policyGroupId2="3";
+    private String uritemplate_urlPattern1="/*";
+    private String uritemplate_httpVerb1="POST";
+    private String uritemplate_policyGroupId1="3";
+    private String uritemplate_urlPattern0="/*";
+    private String uritemplate_httpVerb0="GET";
+    private String uritemplate_policyGroupId0="3";
+    private String entitlementPolicies="[]";
+    private String autoConfig="on";
+    private String providers="wso2is-5.0.0";
+    private String sso_ssoProvider="wso2is-5.0.0";
+    private String claims="http://wso2.org/claims/otherphone";
+    private String claimPropertyCounter="1";
+    private String claimPropertyName0="http://wso2.org/claims/otherphone";
+    private String sso_singleSignOn="Enabled";
+    private String sso_idpProviderUrl="https://localhost:9444/samlsso/";
+    private String sso_saml2SsoIssuer="";
+    private String oauthapis_apiTokenEndpoint1="";
+    private String oauthapis_apiConsumerKey1="";
+    private String oauthapis_apiConsumerSecret1="";
+    private String oauthapis_apiName1="";
+    private String oauthapis_apiTokenEndpoint2="";
+    private String oauthapis_apiConsumerKey2="";
+    private String oauthapis_apiConsumerSecret2="";
+    private String oauthapis_apiName2="";
+    private String oauthapis_apiTokenEndpoint3="";
+    private String oauthapis_apiConsumerKey3="";
+    private String oauthapis_apiConsumerSecret3="";
+    private String oauthapis_apiName3="";
+    private String webapp="webapp";
 
     @Override
     public void init() {
@@ -126,7 +126,7 @@ public class AppCreateRequest extends AbstractRequest {
         addParameter("sso_ssoProvider", getSso_ssoProvider());
         addParameter("claims", getClaims());
         addParameter("claimPropertyCounter", getClaimPropertyCounter());
-        addParameter("claimPropertyName3", getClaimPropertyName3());
+        addParameter("claimPropertyName0", getClaimPropertyName0());
         addParameter("sso_singleSignOn", getSso_singleSignOn());
         addParameter("sso_idpProviderUrl", getSso_idpProviderUrl());
         addParameter("sso_saml2SsoIssuer", getSso_saml2SsoIssuer());
@@ -143,7 +143,8 @@ public class AppCreateRequest extends AbstractRequest {
         addParameter("oauthapis_apiConsumerSecret3", getOauthapis_apiConsumerSecret3());
         addParameter("oauthapis_apiName3", getOauthapis_apiName3());
         addParameter("webapp", getWebapp());
-        addParameter("claimPropertyName0", getClaimPropertyName0());
+        addParameter("uritemplate_javaPolicyIds", getUritemplate_javaPolicyIds());
+        //addParameter("uritemplate_javaPolicyIds", getUritemplate_javaPolicyIds());
     }
 
     @Override
@@ -494,13 +495,15 @@ public class AppCreateRequest extends AbstractRequest {
         this.claimPropertyCounter = claimPropertyCounter;
     }
 
-    public String getClaimPropertyName3() {
-        return claimPropertyName3;
+    public String getClaimPropertyName0() {
+        return claimPropertyName0;
     }
 
-    public void setClaimPropertyName3(String claimPropertyName3) {
-        this.claimPropertyName3 = claimPropertyName3;
+    public void setClaimPropertyName0(String claimPropertyName0) {
+        this.claimPropertyName0 = claimPropertyName0;
     }
+
+
 
     public String getSso_singleSignOn() {
         return sso_singleSignOn;
@@ -630,11 +633,11 @@ public class AppCreateRequest extends AbstractRequest {
         this.webapp = webapp;
     }
 
-    public String getClaimPropertyName0() {
-        return claimPropertyName0;
+    public String getUritemplate_javaPolicyIds() {
+        return uritemplate_javaPolicyIds;
     }
 
-    public void setClaimPropertyName0(String claimPropertyName0) {
-        this.claimPropertyName0 = claimPropertyName0;
+    public void setUritemplate_javaPolicyIds(String uritemplate_javaPolicyIds) {
+        this.uritemplate_javaPolicyIds = uritemplate_javaPolicyIds;
     }
 }

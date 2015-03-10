@@ -25,17 +25,30 @@ import java.util.Map;
 public abstract class AbstractRequest {
 
     public String action;
-    private Map parameterMap = new HashMap<String, String>();
+    private Map<String,String> parameterMap = new HashMap<String, String>();
     private static final String ACTION_PARAMETER_VALUE = "action";
 
     public String generateRequestParameters() {
         parameterMap.clear();
         init();
-        String requestParams = ACTION_PARAMETER_VALUE + "=" + action;
+        String requestParams ="";
         Iterator<String> irt = parameterMap.keySet().iterator();
         while (irt.hasNext()) {
             String key = irt.next();
-            requestParams = requestParams + "&" + key + "=" + parameterMap.get(key);
+            if(key.equals("claimPropertyName0") && parameterMap.get(key).contains(",") ){
+                String[] claims =   parameterMap.get(key).split(",");
+
+                    for (int i = 0; i <claims.length ; i++) {
+                        requestParams+="&claimPropertyName"+i+ "="+claims[i].trim();
+                    }
+
+                //parameterMap.remove("claimPropertyCounter");
+            }else{
+                if(!requestParams.equals("")){
+                    requestParams += "&";
+                }
+                requestParams += key + "=" + parameterMap.get(key);
+            }
         }
         return requestParams;
     }

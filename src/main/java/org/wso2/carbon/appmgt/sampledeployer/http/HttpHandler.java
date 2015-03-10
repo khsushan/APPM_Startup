@@ -19,6 +19,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +49,10 @@ public class HttpHandler {
     private final String USER_AGENT = "Mozilla/5.0";
 
 
-    public String doPost(String backEnd, String payload, String your_session_id, String contentType)
+    public String doPostHttps(String backEnd, String payload, String your_session_id, String contentType)
             throws IOException {
         URL obj = new URL(backEnd);
+
         HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
         //add reuqest header
         con.setRequestMethod("POST");
@@ -69,6 +71,7 @@ public class HttpHandler {
         int responseCode = con.getResponseCode();
         if (responseCode == 200) {
             System.out.println("Session message" + con.getResponseMessage());
+
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
             String inputLine;
@@ -81,6 +84,51 @@ public class HttpHandler {
                 System.out.println(response.toString());
                 String session_id = response.substring((response.lastIndexOf(":") + 3), (response.lastIndexOf("}") - 2));
                 return session_id;
+            }else if(your_session_id.equals("header")){
+                return con.getHeaderField("Set-Cookie");
+            }
+            return response.toString();
+        }
+        return null;
+    }
+
+    public String doPostHttp(String backEnd, String payload, String your_session_id, String contentType)
+            throws IOException {
+        URL obj = new URL(backEnd);
+
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        //add reuqest header
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        if (!your_session_id.equals("")) {
+            con.setRequestProperty(
+                    "Cookie", "JSESSIONID=" + your_session_id);
+        }
+        con.setRequestProperty("Content-Type", contentType);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(payload);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        if (responseCode == 200) {
+            System.out.println("Session message" + con.getResponseMessage());
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            if (your_session_id.equals("")) {
+                System.out.println(response.toString());
+                String session_id = response.substring((response.lastIndexOf(":") + 3), (response.lastIndexOf("}") - 2));
+                return session_id;
+            }else if(your_session_id.equals("header")){
+                return con.getHeaderField("Set-Cookie").split("=")[1].split(";")[0];
             }
             return response.toString();
         }
@@ -152,6 +200,8 @@ public class HttpHandler {
             reqEntity.addPart("screenshot3File", screenShot3);
             reqEntity.addPart("addNewAssetButton", new StringBody("Submit", ContentType.MULTIPART_FORM_DATA));
             reqEntity.addPart("mobileapp", new StringBody(mobileApplicationBean.getMobileapp(),
+                    ContentType.MULTIPART_FORM_DATA));
+            reqEntity.addPart("sso_ssoProvider",new StringBody(mobileApplicationBean.getSso_ssoProvider(),
                     ContentType.MULTIPART_FORM_DATA));
             reqEntity.addPart("appmeta", new StringBody(mobileApplicationBean.getAppmeta(),
                     ContentType.MULTIPART_FORM_DATA));
