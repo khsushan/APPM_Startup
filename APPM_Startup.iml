@@ -248,5 +248,6 @@
     <orderEntry type="library" name="Maven: commons-dbcp.wso2:commons-dbcp:1.4.0.wso2v1" level="project" />
     <orderEntry type="library" name="Maven: org.wso2.carbon:org.wso2.carbon.user.mgt.common:4.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.wso2.carbon:org.wso2.carbon.um.ws.api.stub:4.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.8.1" level="project" />
   </component>
 </module>

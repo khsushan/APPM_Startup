@@ -51,8 +51,4 @@ public class LoginAdminServiceClient {
         }
         return sessionCookie;
     }
-
-    public void logOut() throws RemoteException, LogoutAuthenticationExceptionException {
-        authenticationAdminStub.logout();
-    }
 }

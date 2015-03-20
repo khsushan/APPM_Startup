@@ -3,6 +3,7 @@ package org.wso2.carbon.appmgt.sampledeployer.bean;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 /*
 *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -51,6 +52,16 @@ public abstract class AbstractRequest {
             }
         }
         return requestParams;
+    }
+
+    public String generateTrackingID(){
+        Random rand = new Random();
+        StringBuilder randomNumber = new StringBuilder();
+        randomNumber.append("AM_");
+        for (int i =0 ; i < 18 ; i++){
+            randomNumber.append(rand.nextInt((10 - 1) + 1) + 1);
+        }
+        return randomNumber.toString();
     }
 
     public void addParameter(String key, String value) {
