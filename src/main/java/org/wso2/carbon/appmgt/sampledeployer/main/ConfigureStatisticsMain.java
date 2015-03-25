@@ -37,8 +37,7 @@ public class ConfigureStatisticsMain {
                     ,"jdbc:h2:"+bamPath + "/repository/database/APIMGTSTATS_DB;AUTO_SERVER=TRUE");
             XMLHandler.updateOffset(bamPath + "/repository/conf/carbon.xml", offcet);
             ///home/ushan/Shell_Script_Test/BAM/wso2bam-2.5.0/repository/conf/datasources/bam-datasources.xml
-            XMLHandler.updateBamDatasource(bamPath + "/repository/conf/datasources/bam-datasources.xml", node
-                    , "9163");
+            XMLHandler.updateBamDatasource(bamPath + "/repository/conf/datasources/bam-datasources.xml", node);
             //XMLHandler.updateHectorConfigXML(bamPath + "/repository/conf/etc/hector-config.xml", "localhost:9160");
         } catch (ParserConfigurationException e) {
             e.printStackTrace();

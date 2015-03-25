@@ -18,9 +18,23 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Random;
 
-/**
- * Created by ushan on 3/10/15.
- */
+/*
+*  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+*  WSO2 Inc. licenses this file to you under the Apache License,
+*  Version 2.0 (the "License"); you may not use this file except
+*  in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
 public class XMLHandler {
 
     public XMLHandler(){
@@ -40,7 +54,6 @@ public class XMLHandler {
             Node bamServerURl = docElement.getElementsByTagName("BAMServerURL").item(0);
             bamServerURl.setTextContent("tcp://"+ipAddress+":"+port);
         }
-
         Node dataSourceName = doc.createElement("DataSourceName");
         dataSourceName.appendChild(doc.createTextNode("jdbc/WSO2AM_STATS_DB"));
         apiUsageTrackingNode.appendChild(dataSourceName);
@@ -76,7 +89,6 @@ public class XMLHandler {
         Node portNode = doc.getElementsByTagName("Ports").item(0);
         Node definitionNode = ((Element)portNode).getElementsByTagName("Offset").item(0);
         definitionNode.setTextContent(offset);
-
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(doc);
@@ -84,7 +96,7 @@ public class XMLHandler {
         transformer.transform(source, result);
     }
 
-    public  static void updateBamDatasource(String xmlFilePath,Node node,String port) throws IOException, SAXException, ParserConfigurationException, TransformerException {
+    public  static void updateBamDatasource(String xmlFilePath,Node node) throws IOException, SAXException, ParserConfigurationException, TransformerException {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         Document doc = docBuilder.parse(xmlFilePath.trim());
@@ -112,63 +124,4 @@ public class XMLHandler {
         StreamResult result = new StreamResult(new File(xmlFilePath).toURI().getPath());
         transformer.transform(source, result);
     }
-
-//    public static void main(String[] args) {
-//        try {
-//            //configuredAPPMXML("/home/ushan/Shell_Script_Test/APPM
-//            // /wso2appm-1.0.0-SNAPSHOT/repository/conf/app-manager.xml", "APIUsageTracking");
-//            Node dataSourceNode = configuredDataSourceXML("/home/ushan/Shell_Script_Test/APPM/wso2appm-1.0.0-SNAPSHOT/" +
-//                            "repository/conf/datasources/master-datasources.xml","/home/ushan/wso2/wso2bam-2.4.1" +
-//                            "/repository/database/APIMGTSTATS_DB;AUTO_SERVER=TRUE");
-//
-//            updateBamDatasource("/home/ushan/wso2/wso2bam-2.4.1/repository/conf/datasources/bam-datasources.xml"
-//                    ,dataSourceNode,"jdbc:cassandra://localhost:9163/EVENT_KS");
-//            //updateOffset("/home/ushan/wso2/wso2bam-2.4.1/repository/conf/carbon.xml","2");
-//
-//             updateHectorConfigXML("/home/ushan/wso2/wso2bam-2.4.1/repository/conf/etc/hector-config.xml"
-//                     ,"localhost:9163");
-//            System.out.println("done");
-//        } catch (ParserConfigurationException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (SAXException e) {
-//            e.printStackTrace();
-//        } catch (TransformerException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
-
-//
-
-
-    /*public static void main(String args[]) {
-        try {
-
-            Process p = Runtime.getRuntime().exec(new String[]{"bash","-c","sh  ~/wso2/APPM/New_Pack/21st/wso2appm-1.0.0-SNAPSHOT/bin/wso2server.sh"});
-
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line=null;
-
-            while((line=input.readLine()) != null) {
-                System.out.println(line);
-            }
-            int exitVal = p.waitFor();
-            System.out.println("Exited with error code "+exitVal);
-
-            String command= "/usr/bin/xterm";
-            Runtime rt = Runtime.getRuntime();
-            Process pr = rt.exec(command);
-
-        } catch(Exception e) {
-            System.out.println(e.toString());
-            e.printStackTrace();
-        }
-        System.out.println(getGeneratedTrackingID());
-    }*/
-
-
-
 }

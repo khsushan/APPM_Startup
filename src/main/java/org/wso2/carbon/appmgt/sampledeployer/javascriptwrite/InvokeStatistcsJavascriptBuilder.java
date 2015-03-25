@@ -13,7 +13,6 @@ public class InvokeStatistcsJavascriptBuilder {
     public  InvokeStatistcsJavascriptBuilder(String trackingID,String ipAddress){
         jsFunction = "function invokeStatistics(){\n" +
                 "       var tracking_code = \""+trackingID+"\";\n" +
-                "        alert(tracking_code); \n"+
                 "        var request = $.ajax({\n" +
                 "        url: \"http://"+ipAddress+":8280/statistics/\",\n" +
                 "        type: \"GET\",\n" +
