@@ -50,7 +50,6 @@ public class XMLHandler {
             Element docElement = (Element)apiUsageTrackingNode;
             Node enabled = docElement.getElementsByTagName("Enabled").item(0);
             enabled.setTextContent("true");
-            System.out.println("done");
             Node bamServerURl = docElement.getElementsByTagName("BAMServerURL").item(0);
             bamServerURl.setTextContent("tcp://"+ipAddress+":"+port);
         }
@@ -101,6 +100,7 @@ public class XMLHandler {
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         Document doc = docBuilder.parse(xmlFilePath.trim());
         Node datasources = doc.getElementsByTagName("datasources").item(0);
+        Element datasourceElements = (Element)datasources;
         Node datasource=doc.importNode(node,true);
         datasources.appendChild(datasource);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();

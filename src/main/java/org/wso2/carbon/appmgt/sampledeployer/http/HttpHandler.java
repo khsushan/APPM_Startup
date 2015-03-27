@@ -92,8 +92,6 @@ public class HttpHandler {
         wr.close();
         int responseCode = con.getResponseCode();
         if (responseCode == 200) {
-            System.out.println("Session message" + con.getResponseMessage());
-
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
             String inputLine;
@@ -103,7 +101,6 @@ public class HttpHandler {
             }
             in.close();
             if (your_session_id.equals("")) {
-                System.out.println(response.toString());
                 String session_id = response.substring((response.lastIndexOf(":") + 3), (response.lastIndexOf("}") - 2));
                 return session_id;
             }else if(your_session_id.equals("header")){
@@ -127,7 +124,6 @@ public class HttpHandler {
                     "Cookie", "JSESSIONID=" + your_session_id);
         }
         con.setRequestProperty("Content-Type", contentType);
-        //con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         con.setDoOutput(true);
         DataOutputStream wr = new DataOutputStream(con.getOutputStream());
         wr.writeBytes(payload);
@@ -135,7 +131,6 @@ public class HttpHandler {
         wr.close();
         int responseCode = con.getResponseCode();
         if (responseCode == 200) {
-            System.out.println("Session message" + con.getResponseMessage());
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
             String inputLine;
@@ -145,15 +140,9 @@ public class HttpHandler {
             }
             in.close();
             if (your_session_id.equals("")) {
-                System.out.println(response.toString());
                 String session_id = response.substring((response.lastIndexOf(":") + 3), (response.lastIndexOf("}") - 2));
                 return session_id;
             }else if (your_session_id.equals("appmSamlSsoTokenId")) {
-                Map<String, List<String>> headerFields = con.getHeaderFields();
-                for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
-                    System.out.println("Key : " + entry.getKey() +
-                            "  ,Value : " + entry.getValue());
-                }
                 return con.getHeaderField("Set-Cookie").split(";")[0].split("=")[1];
             }else if(your_session_id.equals("header")){
                     return con.getHeaderField("Set-Cookie").split("=")[1].split(";")[0];
@@ -193,12 +182,10 @@ public class HttpHandler {
         httpPost.addHeader("Cookie", "JSESSIONID=" + cookie);
         MultipartEntityBuilder reqEntity;
         if (method.equals("upload")) {
-            //System.out.println("Upload app data");
             reqEntity = MultipartEntityBuilder.create();
             FileBody fileBody = new FileBody(new File(mobileApplicationBean.getApkFile()));
             reqEntity.addPart("file", fileBody);
         } else {
-            //System.out.println("Send app data");
             reqEntity = MultipartEntityBuilder.create();
             reqEntity.addPart("version", new StringBody(mobileApplicationBean.getVersion(),
                     ContentType.MULTIPART_FORM_DATA));
@@ -231,10 +218,8 @@ public class HttpHandler {
         }
         final HttpEntity entity = reqEntity.build();
         httpPost.setEntity(entity);
-        System.out.println("Requesting : " + httpPost.getAllHeaders());
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         String responseBody = httpClient.execute(httpPost, responseHandler);
-        System.out.println("responseBody : " + responseBody);
         if (!method.equals("upload")) {
             String id_part = responseBody.split(",")[2].split(":")[1];
             return id_part.substring(2, (id_part.length() - 2));
